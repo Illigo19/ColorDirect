@@ -1,0 +1,36 @@
+{
+
+  "description": "Custom écoleDirect",
+  "manifest_version": 2,
+  "name": "ColorDirect",
+  "version": "0.0.0.1",
+
+  "content_scripts": [ {
+		"css": [ "color.css" ],
+		"matches": [ "https://www.ecoledirecte.com/*" ],
+		"js": ["color.js"]
+
+	} ],
+
+ 
+  "icons": {
+    "16": "icon/16.png"
+
+
+  },
+
+  "permissions": [
+    "activeTab", "storage", "tabs", "http://*/", "https://*/"
+
+],
+
+
+"browser_action": {
+    "default_icon": {
+      "16": "icon/16.png"
+      
+    },
+    "default_popup": "indexpop.html"
+  }
+
+}
