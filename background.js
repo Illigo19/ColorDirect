@@ -1,28 +1,66 @@
 var colorWell
 
-var defaultColor = "#000000";
+
+
+chrome.storage.local.get(['key'], function(result) {
+  defaultColor = result.key;
+  console.log('Value currently is ' + defaultColor);
+});
+
+
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    chrome.storage.sync.get(['bodyCheckSave'], function(result) {
-      if (result.bodyCheckSave == "check") {
-        console.log("check");
+//auto-check checkbox if it was checked.
+  chrome.storage.local.get(['check'], function(result) {
+      if (result.check == 'check') {
         document.getElementById("backTrue").checked = true;
-      };
-  });
-  var checkbox = document.getElementById("backTrue");
-  checkbox.addEventListener('change', function() {
-    if (this.checked) {
-      chrome.storage.sync.set({ "bodySave": event.target.value }, function(){
-        console.log("save");
-      });
-    } else {
-      chrome.storage.sync.set({ "bodyCheckSave": "off" }, function(){
-          console.log("save");
-        });
-    }
+      }
   });
 
-});
+//save state of checkbox
+  var checkbox = document.getElementById("backTrue");
+  checkbox.addEventListener('change', function() {
+
+
+    if (document.getElementById("backTrue").checked) {
+      checked = "check";
+      chrome.storage.local.set({'check': checked}, function() {
+        console.log('is checked');
+      });
+
+      chrome.storage.local.get(['key'], function(result) {
+        defaultColor = result.key;
+        console.log(defaultColor);
+        
+      });
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: defaultColor});
+        });
+
+    } else {
+      checked = "not";
+      chrome.storage.local.set({'check': checked}, function() {
+        console.log('not checked');
+      });
+      //set background-color to #ffffff
+
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: "#ffffff"});
+      });
+
+    }
+    // for console only
+    chrome.storage.local.get(['check'], function(result) {
+      stateCheck = result.check;
+      console.log('Value currently is ' + stateCheck);
+
+    });
+
+    })
+
+  });
+
+
 
 
 
@@ -32,39 +70,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function startup() {
   colorWell = document.querySelector("#backcolor");
-  chrome.storage.sync.get(['bodySave'], function(result) {
-    if (result.bodySave != null) {
-      defaultColor = result.bodySave;
-    };
-    console.log('Value currently is ' + result.key);
+
+
+  chrome.storage.local.get(['key'], function(result) {
+    defaultColor = result.key;
+    console.log('Value currently is ' + defaultColor);
+    colorWell.value = defaultColor;
+    colorWell.style.background = defaultColor;
+    colorWell.addEventListener("input", updateFirst, false);
+    colorWell.addEventListener("change", updateAll, false);
+    colorWell.select();
+
   });
-  colorWell.value = defaultColor;
-  colorWell.addEventListener("input", updateFirst, false);
-  colorWell.addEventListener("change", updateAll, false);
-  colorWell.select();
-  let str = '';
-
-  for (let i = 0; i < 2; i++) {
-    str = str + i;
-    if (document.getElementById("backTrue").checked) {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: event.target.value});
-    });
-    chrome.storage.sync.set({ "bodySave": event.target.value }, function(){
-      console.log("save");
-    });
-  } else {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: "#ffffff"});
-      });
-
-    }
-  }
-  
-
-
-  
 }
+  
+
+
+  
+
 
 function updateFirst(event) {
   var p = document.querySelector("#backcolor");
@@ -72,49 +95,46 @@ function updateFirst(event) {
   if (p) {
     
     p.style.background = event.target.value;
+    color = event.target.value;
 
     if (document.getElementById("backTrue").checked) {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: event.target.value});
-      chrome.storage.sync.set({ "bodyCheckSave": "check" }, function(){
-        console.log("save");
       });
-    });
-    chrome.storage.sync.set({ "bodySave": event.target.value }, function(){
-      console.log("save");
-    });
-  }
-  else {
+
+      //save state of color
+      chrome.storage.local.set({key: color}, function() {
+        console.log('Value is set to ' + color);
+
+      });
+
+
+    }else {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: "#ffffff"});
       });
-      chrome.storage.sync.set({ "bodyCheckSave": "off" }, function(){
-        console.log("save");
-      });
+      
     }
-}}
+    
+  }
+}
 
 function updateAll(event) {
   document.querySelectorAll("#backcolor").forEach(function(p) {
     p.style.background = event.target.value;
+
+
     if (document.getElementById("backTrue").checked) {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: event.target.value});
       });
-      chrome.storage.sync.set({ "bodySave": event.target.value }, function(){
-        console.log("save");
-      });
-      chrome.storage.sync.set({ "checkBodySave": "check" }, function(){
-        console.log("save");
-      });
-    }
-    else {
+      
+      
+    }else {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: "#ffffff"});
       });
-      chrome.storage.sync.set({ "bodyCheckSave": "off" }, function(){
-        console.log("save");
-      });
+      
     }
 
   }); 
