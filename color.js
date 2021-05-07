@@ -33,12 +33,18 @@ function bg () {
     chrome.storage.local.get(['gamer'], function(result) {
         gamer = result.gamer;
         console.log(gamer);
-        if(gamer == 'check') {
+        chrome.storage.local.get(['speed'], function(result) {
+            speedly = result.speed;
+            console.log(speedly);
+            if(gamer == 'check') {
             
-            setTimeout(function() {
-                bg();
-            }, 10);
-        }
+                setTimeout(function() {
+                    bg();
+                }, parseInt(speedly));
+            };
+
+        })
+        
     });
 
     body.style.background = 'rgb('+r+','+g+','+b+')';

@@ -28,6 +28,46 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
     if (result.gamer == 'check') {
       document.getElementById("gamer").checked = true;
+      var slider = document.getElementById("range");
+        var output = document.getElementById("speed");
+        var pGamer = document.getElementById("pGamer");
+        slider.style.display = "block";
+        output.style.display = "block";
+        pGamer.style.display = "block";
+        output.innerHTML = "Fast";
+        chrome.storage.local.get(['speed'], function(result) {
+          speedValue = result.speed;
+          speedValue = this.value;
+          speedValue = parseInt(speedValue);
+          if(speedValue < 7){
+            output.innerHTML = "Fast";
+          }else if(speedValue < 10 ){
+            output.innerHTML = "Normal";
+          }else if(speedValue < 15){
+            output.innerHTML = "Slow";
+          }
+          else if(speedValue > 15){
+            output.innerHTML = "really Slow";
+          }
+          
+        });
+        slider.oninput = function() {
+          speedValue = this.value;
+          speedValue = parseInt(speedValue);
+          if(speedValue < 7){
+            output.innerHTML = "Fast";
+          }else if(speedValue < 10){
+            output.innerHTML = "Normal";
+          }else if(speedValue < 15){
+            output.innerHTML = "Slow";
+          }
+          else if(speedValue > 15){
+            output.innerHTML = "really Slow";
+          }
+          chrome.storage.local.set({'speed': speedValue}, function() {
+            console.log('speed : ', speedValue);
+          });
+        };
     }
   });
 
@@ -134,7 +174,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
     var checkbox = document.getElementById("gamer");
     checkbox.addEventListener('change', function() {
       if (checkbox.checked){
+        
+        var slider = document.getElementById("range");
+        var output = document.getElementById("speed");
+        var pGamer = document.getElementById("pGamer");
+        slider.style.display = "block";
+        output.style.display = "block";
+        pGamer.style.display = "block";
+        
+        output.innerHTML = slider.value;
+        slider.oninput = function() {
 
+          
+          speedValue = this.value;
+          speedValue = parseInt(speedValue);
+          if(speedValue < 7){
+            output.innerHTML = "Fast";
+          }else if(speedValue < 10){
+            output.innerHTML = "Normal";
+          }else if(speedValue < 15){
+            output.innerHTML = "Slow";
+          }
+          else if(speedValue > 15){
+            output.innerHTML = "really Slow";
+          }
+
+          
+
+          chrome.storage.local.set({'speed': speedValue}, function() {
+            console.log('speed : ', speedValue);
+          });
+          chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {type: "gamer", color: "off"});
+          });
+        };
         document.getElementById("backTrueStudent").checked = false;
         checked = "not";
         chrome.storage.local.set({'checkStudent': checked}, function() {
@@ -159,6 +232,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
           chrome.tabs.sendMessage(tabs[0].id, {type: "gamer", color: "on"});
         });
       } else {
+        var slider = document.getElementById("range");
+        var output = document.getElementById("speed");
+        var pGamer = document.getElementById("pGamer");
+        slider.style.display = "none";
+        output.style.display = "none";
+        pGamer.style.display = "none";
         checked = "not";
         chrome.storage.local.set({'gamer': checked}, function() {
           console.log('not checked');
