@@ -6,7 +6,7 @@ g = 0,
 b = 0;
 body = document.body;
 function bg () {
-    console.log("sdfsdf");
+
     if (r <= 255 && g == 0 && b == 0) {
         r ++;
     }
@@ -32,10 +32,10 @@ function bg () {
     }
     chrome.storage.local.get(['gamer'], function(result) {
         gamer = result.gamer;
-        console.log(gamer);
+
         chrome.storage.local.get(['speed'], function(result) {
             speedly = result.speed;
-            console.log(speedly);
+            
             if(gamer == 'check') {
             
                 setTimeout(function() {
@@ -56,15 +56,13 @@ function bg () {
 
 chrome.storage.local.get(['gamer'], function(result) {
     gamer = result.gamer;
-    console.log(gamer);
+    
     if(gamer == 'check') {
-        bg();
-        
-         
+        bg();   
     }else {
         chrome.storage.local.get(['check'], function(result) {
             stateCheck = result.check;
-            console.log(stateCheck);
+            
             if(stateCheck == 'check') {
 
                 chrome.storage.local.get(['key'], function(result) {
@@ -77,13 +75,12 @@ chrome.storage.local.get(['gamer'], function(result) {
         chrome.storage.local.get(['checkStudent'], function(result) {
             stateCheck2 = result.checkStudent;
             console.log(stateCheck2);
-            console.log('nice');
             if(stateCheck2 == 'check') {
 
                 chrome.storage.local.get(['studBack'], function(result) {
                     student = document.getElementById('menu-part');
                     student.style.background = result.studBack;
-                    console.log(result.studBack);
+                    
                 }); 
             }
         });
@@ -93,28 +90,25 @@ chrome.storage.local.get(['gamer'], function(result) {
 
 chrome.runtime.onMessage.addListener(
     function(message, sender, sendResponse) {
-    	console.log("j'ai reçu bg");
+    	
         switch(message.type) {
             case "body":
                 body = document.body;
                 body.style.background = message.color;
-                console.log(message.color);
+                
                 break;
             case "student":
                 student = document.getElementById('menu-part');
                 student.style.background = message.color;
-                console.log(message.color);
+                
                 break;
             case "gamer":
                 if (message.color == 'on') {
-                    console.log("gamerz");
-                    bg();
                     
-                    
+                    bg();    
                 }else {
                     body = document.body;
-                    body.style.background = "#ffffff"
-                    console.log("color set");
+                    body.style.background = "#ffffff"    
                 }
             default:
                 console.error("Unrecognised message: ", message);

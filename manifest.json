@@ -6,7 +6,6 @@
   "version": "1.5.0.0",
 
   "content_scripts": [ {
-		"css": [ "color.css" ],
 		"matches": [ "https://www.ecoledirecte.com/*" ],
 		"js": ["color.js"]
 

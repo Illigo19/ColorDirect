@@ -4,13 +4,16 @@ var colorWellBack
 
 chrome.storage.local.get(['key'], function(result) {
   defaultColor = result.key;
-  console.log('Value currently is ' + defaultColor);
 });
 
 
 
 document.addEventListener('DOMContentLoaded', (event) => {
-//auto-check checkbox if it was checked.
+  //auto-check checkbox if it was checked.
+  chrome.storage.local.get(['speed'], function(result) {
+    speedly = result.speed;
+    document.getElementById("range").value = parseInt(speedly);
+  })
   chrome.storage.local.get(['check'], function(result) {
       if (result.check == 'check') {
         document.getElementById("backTrue").checked = true;
@@ -34,7 +37,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         slider.style.display = "block";
         output.style.display = "block";
         pGamer.style.display = "block";
-        output.innerHTML = "Fast";
         chrome.storage.local.get(['speed'], function(result) {
           speedValue = result.speed;
           speedValue = this.value;
@@ -54,6 +56,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         slider.oninput = function() {
           speedValue = this.value;
           speedValue = parseInt(speedValue);
+          speedValue = 21 - speedValue;
           if(speedValue < 7){
             output.innerHTML = "Fast";
           }else if(speedValue < 10){
@@ -79,12 +82,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     if (document.getElementById("backTrue").checked) {
       checked = "check";
       chrome.storage.local.set({'check': checked}, function() {
-        console.log('is checked');
+        
       });
 
       chrome.storage.local.get(['key'], function(result) {
         defaultColor = result.key;
-        console.log(defaultColor);
         
       });
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -94,7 +96,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     } else {
       checked = "not";
       chrome.storage.local.set({'check': checked}, function() {
-        console.log('not checked');
+
       });
       //set background-color to #ffffff
 
@@ -103,58 +105,38 @@ document.addEventListener('DOMContentLoaded', (event) => {
       });
 
     }
-    // for console only
-    chrome.storage.local.get(['check'], function(result) {
-      stateCheck = result.check;
-      console.log('Value currently is ' + stateCheck);
-
-    });
-//second checkbox
-    })
-
-    var checkbox = document.getElementById("backTrueStudent");
-    checkbox.addEventListener('change', function() {
-      if (document.getElementById("backTrueStudent").checked) {
-        checked = "check";
-        chrome.storage.local.set({'checkStudent': checked}, function() {
-          console.log('is checked');
-        });
-
-        chrome.storage.local.get(['studBack'], function(result) {
-          colorStudDefault = result.studBack;
-          console.log(colorStudDefault);
-        
-        });
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {type: "student", color: colorStudDefault});
-          });
-
-      } else {
-        checked = "not";
-        chrome.storage.local.set({'checkStudent': checked}, function() {
-          console.log('not checked');
-        });
-        //set background-color to #ffffff
-
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {type: "student", color: "#0E4F94"});
-        });
-
-      }
-      // for console only
-      chrome.storage.local.get(['checkStudent'], function(result) {
-        stateCheck = result.checkStudent;
-        console.log('Value currently is ' + stateCheck);
+  }); 
+  var checkbox = document.getElementById("backTrueStudent");
+  checkbox.addEventListener('change', function() {
+    if (document.getElementById("backTrueStudent").checked) {
+      checked = "check";
+      chrome.storage.local.set({'checkStudent': checked}, function() {
+        console.log('is checked');
       });
-    })
+
+      chrome.storage.local.get(['studBack'], function(result) {
+        colorStudDefault = result.studBack;
+        console.log(colorStudDefault);
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {type: "student", color: colorStudDefault});
+        });
+      });
+    } else {
+      checked = "not";
+      chrome.storage.local.set({'checkStudent': checked}, function() {
+        console.log('not checked');
+      });
+        //set background-color to #ffffff
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {type: "student", color: "#0E4F94"});
+      });
+    }
+  })
   //all checkBox
     var checkbox = document.getElementById("all");
     checkbox.addEventListener('change', function() {
-
-
       if (document.getElementById("all").checked == false) {
 
-        
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           chrome.tabs.sendMessage(tabs[0].id, {type: "student", color: "#0E4F94"});
         });
@@ -168,6 +150,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
           chrome.tabs.sendMessage(tabs[0].id, {type: "body", color: "#ffffff"});
         });
+
       }
     });
     //gamer's mod
@@ -188,6 +171,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
           
           speedValue = this.value;
           speedValue = parseInt(speedValue);
+          speedValue = 21 - speedValue;
           if(speedValue < 7){
             output.innerHTML = "Fast";
           }else if(speedValue < 10){
@@ -198,9 +182,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
           else if(speedValue > 15){
             output.innerHTML = "really Slow";
           }
-
-          
-
           chrome.storage.local.set({'speed': speedValue}, function() {
             console.log('speed : ', speedValue);
           });
@@ -250,17 +231,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
   
 });
-
-
-
-
-
-
-
-
-
-
-
 
 function startup() {
   colorWellBack = document.querySelector("#backcolor");
@@ -397,6 +367,3 @@ function updateAll(event) {
 }
 
 window.addEventListener("load", startup, false);
-
-
-

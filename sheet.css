@@ -5,7 +5,7 @@ html {
 }
 
 body {
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background: linear-gradient(-45deg, #ee7752, #e73c3c, #23a6d5, #23d523);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
   color: white;
@@ -72,11 +72,11 @@ table {
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #4ceb0d;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #4ceb0d;
 }
 
 input:checked + .slider:before {
