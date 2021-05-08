@@ -7,3 +7,4 @@
     <th>ColorDirect c'est bien mais pas finit</th>
   </tr>
 </table>
+<p> Version actuelle : 1.5.2</p>
